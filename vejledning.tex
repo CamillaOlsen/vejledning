@@ -1,8 +1,6 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[danish]{babel}
-\usepackage{amsmath}
-\usepackage{ulem}
 \usepackage{palatino}
 \usepackage{url}
 \newcommand{\env}[1]{\textit{#1}}
@@ -137,16 +135,24 @@ aktoversigt m.m. Brug sketch-skabelonen til formålet.
 \subsection{Installation af RevyTeX}
 \begin{enumerate}
 \item Navigér til den mappe hvor RevyTeX skal bo. evt. \shellcmd{mkdir
-revy && cd revy
+revy \&\& cd revy}
 \item Hent RevyTeX med \shellcmd{git clone
 git://github.com/dikurevy/RevyTeX.git} eller hent zip-filen fra
 \url{http://github.com/dikurevy/RevyTeX} (og læg RevyTex mappen i mappen
 fra skridt 1.
-\item I en terminal kør \shellcmd{sudo apt-get install libjson-xs-perl
-libfile-slurp-unicode-perl libmakefile-parser-perl libtext-vcard-perl
-libpdf-reuse-perl libpdf-api2-perl} som vil installere alle
-dependencies.
-\item \$\$\$
+\item I en terminal kør 
+\begin{verbatim}
+sudo apt-get install libjson-xs-perl \
+libfile-slurp-unicode-perl \
+libmakefile-parser-perl \
+libtext-vcard-perl \
+libpdf-reuse-perl \
+libpdf-api2-perl
+\end{verbatim} som vil installere alle
+dependencies. (hvis \shellcmd{libfile-slurp-unicode-perl} ikke
+eksisterer, prøv da blot med \shellcmd{libilfe-slurp-perl}).
+\item \$\$\$.
+\end{enumerate}
 
 \subsection{Oprettelse af RevyTeX-katalog}
 Navigér til RevyTeX-mappen med en terminal. Indtast kommandoen \shellcmd{make
