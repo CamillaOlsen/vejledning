@@ -1,0 +1,4 @@
+== For dummies 
+1. Download (with git or the zip-file)
+2. Build vejledning.tex (pdflatex vejledning.tex)
+3 $$$
