@@ -2,7 +2,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage[danish]{babel}
 \usepackage{palatino}
+\usepackage{float}
 \usepackage{url}
+\usepackage{graphicx}
 \newcommand{\env}[1]{\textit{#1}}
 \newcommand{\fname}[1]{\textbf{\texttt{#1}}}
 \newcommand{\cmd}[1]{\textbackslash \texttt{#1}}
@@ -12,7 +14,7 @@
 \newcommand{\term}[1]{\textbf{\textit{#1}}}
 \newcommand{\example}[1]{``\texttt{#1}''}
 \linespread{1.05}
-\title{Vejledning i brug af RevyTEX\\Version 0.9.1}
+\title{Vejledning i brug af RevyTEX\\Version 0.9.2}
 \author{Ronni Elken Lindsgaard}
 
 \begin{document}
@@ -32,7 +34,7 @@ gøre alligevel.
 Guiden er forfattet af Ronni Elken Lindsgaard og bygger på mine egne
 erfaringer med brug af \fname{revy.sty} filen og RevyTex-kataloget og
 skal ikke ses som en udtømmende vejledning i at bruge noget af det.
-Skabelonerne er forfattet af Bjarne Mønsted i forbindelse med FysikRevy.
+Skabelonerne er forfattet af Bjarke Mønsted i forbindelse med FysikRevy.
 Jeg håber det kan bruges. Har man rettelser til fejl eller spørgsmål til
 vage formuleringer bedes man maile
 \texttt{ronni@diku.dk} så vil jeg forsøge at rette dem efter bedste
@@ -148,6 +150,18 @@ aktoversigt m.m. Brug sketch-skabelonen til formålet.
 
 \section{RevyTeX administration}
 \subsection{Installation af RevyTeX}
+%get moreverb package (texlive-latex-extra or
+%http://ctan.org/tex-archive/macros/latex/contrib/moreverb)
+%text-vcard hentes seperat
+%perl -MCPAN -e 'install HTML::Template'
+%YAML::Any
+%JSON::XS
+%Text::vCard
+%File::Slurp
+%File::Slurp::Unicode
+%PDF::Reuse
+%PDF::API2
+%Makefile::Parser
 \begin{enumerate}
 \item Navigér til den mappe hvor RevyTeX skal bo. evt. \shellcmd{mkdir
 revy \&\& cd revy}
@@ -164,14 +178,23 @@ libtext-vcard-perl \
 libpdf-reuse-perl \
 libpdf-api2-perl
 \end{verbatim} som vil installere alle
-dependencies. (hvis \shellcmd{libfile-slurp-unicode-perl} ikke
-eksisterer, prøv da blot med \shellcmd{libilfe-slurp-perl}).
+perl pakker der er nødvendige. (hvis \shellcmd{libfile-slurp-unicode-perl} ikke
+er tilgængelig, forsøg blot med \shellcmd{libfil-slurp-perl} eller find modulet File::Slurp::Unicode på
+\url{http://cpan.org} og installér)
+\item Hent og installér \LaTeX-pakken \textit{moreverb} på
+\url{http://ctan.org/pkg/moreverb} eller kør \shellcmd{sudo apt-get
+install texlive-latex-extra} som vil installere en hel masse
+\LaTeX-pakker (ca 350MB).
 \item \$\$\$.
 \end{enumerate}
 
 \subsection{Oprettelse af RevyTeX-katalog}
 Navigér til RevyTeX-mappen med en terminal. Indtast kommandoen \shellcmd{make
-../20xx} hvor \texttt{20xx} er den mappe som kataloget vil blive gemt som.
+../20xx} hvor \texttt{20xx} er den mappe som kataloget vil blive gemt
+som.\footnote{Bemærk at stien til den nye mappe skal være præfikset med \shellcmd{../}
+dette gør at det nye katalog lægger sig i samme mappe som RevyTeX mappen
+og ikke som en undermappe -- som foråsager at nogle af scriptsne ikke
+kan finde ud af stien.}
 Terminalen vil spørge om revyens navn og årstal. Når disse er indtastet
 vil kataloget blive oprettet.
 
@@ -187,13 +210,66 @@ i aktet i ordnet rækkefølge. Man lister stien til
 sketchen/sangen/videoens tex-fil relativt fra roden af
 RevyTeX-kataloget. f.eks. for sketchen \fname{minfoerstesketch.tex} som ligger
 i sketches-mappen skrives linjen \fname{sketches/minfoerstesketch.tex}. Aktet
-afsluttes med en blank linje.
+afsluttes med en blank linje. Ved at køre \shellcmd{make plan} vil alle
+sketches, sange og vidoer blive listet i \fname{aktoversigt.plan} og man
+kan redigere filen til efterølgende.
 
 Når \fname{aktoversigt.plan} er skrevet køres kommandoen \shellcmd{make} fra en terminal.
 Der vil nu komme en rapport hvor der gerne skulle stå 'OK' som det
 sidste på hver linje. Hvis ikke er der en fejl i den pågældene tex-fil.
 
 Manuskripter, aktoversigt mv. vil nu findes i en nyoprettet mappe ved
-navn \fname{http-pub}.
+navn \fname{www/} (eller med ældre versioner af RevyTeX:
+\fname{http-pub/}).
+\subsection{Fejløgning}
+Det hænder fra tid til anden at bestemte fejl opstår. Her er dækkes
+nogle af de mest normale fejl og hvordan man løser dem.
+\paragraph{Blala error scripts/data.pl line 65}
+Fejlen skyldes tegnsæt problemer. Filerne skal være encodede med utf8 og
+ligeså skal "headeren" være. Dvs. linjen
+\cmd{usepackage}\[latin1\]\{inputenc\}.
+For at få et hurtigt overblik over alle headers i kataloget kan skrives
+\shellcmd{egrep -r '\textbackslash
+usepackage(.*?)\textbackslash\{inputenc\textbackslash\}' *}
+Disse skulle gerne give et filnavn og ``\textbackslash
+usepackage\[utf8\]\{inputenc\}'' ellers skal den pågældene fil rettes
+til.
+
+\section{Øveplanlægning}
+Øveplanlægningsscriptet gør det let og overskueligt at lave
+øvesegmenter, kun ved hjælp af klik med musen. 
+  Dokumentation kommer i en
+efterfølgende version af denne vejledning. 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=\textwidth]{oveplan-example}
+\end{center}
+\end{figure}
+\subsection{Installation og konfiguration}
+Øveplanlægningsscriptet kan findes på
+\url{http://github.com/dikurevy/oeveplan}. Scriptet er stadig under
+kraftig udvikling der har indflydelse på installation og konfiguration
+af scriptet. Når dette er stabilt vil der komme yderligere dokumentation. Indtil da
+kontakt mig på \texttt{ronni@diku.dk} for installationsvejledning.
+\subsection{Brug af øveplanlægningsscriptet}
+\section{Mikrofonplan}
+Mikronfplanlægningsscriptet gør det muligt at lave en mikrofonplan
+udelukkende ved hjælp af drag 'n' drop. Det er muligt at tildele hver
+enkelt mikrofon navn og farve og let fjerne folk fra en sketch som ikke
+behøver have en mikrofon.  Dokumentation kommer i en
+efterfølgende version af denne vejledning.
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=\textwidth]{mikrofonplan-example}
+\includegraphics[width=\textwidth]{mikrofonplan-example2}
+\end{center}
+\end{figure}
+\subsection{Installation og konfiguration}
+Mikrofonplanlægningsscriptet kan findes på
+\url{http://github.com/dikurevy/mikrofonplan}. Scriptet er stadig under
+kraftig udvikling der har indflydelse på installation og konfiguration
+af scriptet. Når dette er stabilt vil der komme yderligere dokumentation. Indtil da
+kontakt mig på \texttt{ronni@diku.dk} for installationsvejledning.
+\subsection{Brug af mikrofonplanlægningsscriptet}
 \end{document}
 
